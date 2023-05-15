@@ -20,7 +20,6 @@ const UserSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: true,
   },
   college: {
     name: {
@@ -37,7 +36,6 @@ const UserSchema = new mongoose.Schema({
     {
       token: {
         type: String,
-        required: true,
       },
     },
   ],
