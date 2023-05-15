@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken')
 const express = require("express");
 const router = express.Router();
 const bcrypt = require('bcryptjs')
-
+const TestDetails = require('../model/Company_test')
 require("../db/conn");
-const User = require("../model/userSchema");
+const User = require("../model/UserSchema");
 router.get("/", (req, res) => {
   res.send("server router");
 });
@@ -42,12 +42,12 @@ router.post("/login", async (req, res) => {
     const userLogin = await User.findOne({ email: email });
     if (userLogin) {
       const isMatch = await bcrypt.compare(password, userLogin.password);
-      token = await userLogin.generateAuthToken();
-      console.log(token)
-      res.cookie("jwtoken",token,{
-        expires: new Date(Date.now() + 25892000000),
-        httpOnly : true
-      })
+      // token = await userLogin.generateAuthToken();
+      // console.log(token)
+      // res.cookie("jwtoken",token,{
+      //   expires: new Date(Date.now() + 25892000000),
+      //   httpOnly : true
+      // })
       if (!isMatch) {
         res.status(400).json({ error: "Invalid credentials" });
       } else {
@@ -60,4 +60,19 @@ router.post("/login", async (req, res) => {
     console.log(err);
   }
 });
+
+
+router.get('/test',async(req,res)=>{
+  return res.json("Hey");
+})
+
+
+
+
+router.post("/testpatternsadd", async (req,res) =>{
+     const company = new TestDetails(req.body);
+     await company.save();
+     return res.json({status:"Company Pattern Added"});
+})
+
 module.exports = router;
