@@ -4,7 +4,10 @@ const router = express.Router();
 const bcrypt = require('bcryptjs')
 const TestDetails = require('../model/Company_test')
 require("../db/conn");
+const cloudinary  = require('cloudinary');
 const User = require("../model/UserSchema");
+
+
 router.get("/", (req, res) => {
   res.send("server router");
 });
@@ -66,13 +69,40 @@ router.get('/test',async(req,res)=>{
   return res.json("Hey");
 })
 
-
-
-
 router.post("/testpatternsadd", async (req,res) =>{
-     const company = new TestDetails(req.body);
-     await company.save();
-     return res.json({status:"Company Pattern Added"});
+  const company = new TestDetails(req.body);
+  await company.save();
+  return res.json({status:"Company Pattern Added"});
 })
+
+router.post("/getcloudinary",async(req,res)=>{
+  const url_image = req.body.url_image;
+    cloudinary.config({
+        cloud_name: "djmhakv9l",
+        api_key: "682166194484921",
+        api_secret: "qJ4GlFC30Wet9cvOGoGf5xLatvY"
+      });
+    
+      cloudinary.uploader.upload(url_image, (err, result) => {
+        if (err) {
+          return res.json(err);
+        } else {
+          return res.json(result);
+        }})
+})
+
+router.get("/testpatternsdisplay",async (req,res)=>{
+  const status =  await TestDetails.find();
+  return res.json(status); 
+})
+
+
+router.get("/testpatternsdisplay/:id",async(req,res)=>{
+    const company = req.params.id;
+    const status = await TestDetails.find({companyname:company});
+    return res.json(status);
+})
+
+
 
 module.exports = router;

@@ -1,3 +1,4 @@
+
 const { models, model, Schema } = require("mongoose");
 
 const testmod = new Schema({
@@ -56,4 +57,4 @@ const testmod = new Schema({
 
 const testmodel = models.testdetails || model("testdetails", testmod);
 
-export default testmodel;
+module.exports = testmodel;
