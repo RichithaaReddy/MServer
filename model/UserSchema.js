@@ -22,25 +22,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  college: {
-    name: {
-      type: String,
-    },
-    specialisation: {
-      type: String,
-    },
-  },
-  category: {
-    type: String,
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
 });
 //pass hashing
 UserSchema.pre("save", async function (next) {
