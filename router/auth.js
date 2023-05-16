@@ -40,21 +40,29 @@ router.post("/login", async (req, res) => {
     let token;
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(422).json({ error: "enter all fields" });
+      return res.status(422).json({ "status": "enter all fields" });
     }
     const userLogin = await User.findOne({ email: email });
     if (userLogin) {
       const isMatch = await bcrypt.compare(password, userLogin.password);
-      // token = await userLogin.generateAuthToken();
-      // console.log(token)
-      // res.cookie("jwtoken",token,{
-      //   expires: new Date(Date.now() + 25892000000),
-      //   httpOnly : true
-      // })
       if (!isMatch) {
-        res.status(400).json({ error: "Invalid credentials" });
+        res.status(400).json({ "status": "Invalid credentials" });
       } else {
-        res.json({ message: "login successfull" });
+        let payload = {
+          user:{
+             id:userLogin.id
+          }
+        }
+        const token = jwt.sign(payload,"NOTTOBESHARED",{expiresIn:9999999999999},(err,token)=>{
+               if(err)
+               {
+                res.send(err);
+               }
+               else
+               {
+                   res.json({"status":token});
+               }
+        })
       }
     } else {
       res.status(400).json({ error: "Invalid credentials" });
@@ -104,5 +112,10 @@ router.get("/testpatternsdisplay/:id",async(req,res)=>{
 })
 
 
+// router.post("/submit", async (req, res)=>{
+// try{
+//   const {email , answers } = req.body;
+//   const response = await axios.get()
+// })
 
 module.exports = router;
