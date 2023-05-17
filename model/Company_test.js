@@ -1,9 +1,8 @@
-
 const { models, model, Schema } = require("mongoose");
 
 const testmod = new Schema({
   companyname: {
-    type: String,
+    type: String, 
     required: true,
   },
   logo: {

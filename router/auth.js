@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require('bcryptjs')
 const TestDetails = require('../model/Company_test')
+const Resultdetails = require('../model/ResultSchema')
 require("../db/conn");
 const cloudinary  = require('cloudinary');
 const User = require("../model/UserSchema");
@@ -112,10 +113,11 @@ router.get("/testpatternsdisplay/:id",async(req,res)=>{
 })
 
 
-// router.post("/submit", async (req, res)=>{
-// try{
-//   const {email , answers } = req.body;
-//   const response = await axios.get()
-// })
+router.post("/scorecard", async (req, res)=>{
+  const marks = new Resultdetails(req.body);
+  await marks.save();
+  return res.json({status:"Results Added"});
+
+})
 
 module.exports = router;

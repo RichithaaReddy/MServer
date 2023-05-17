@@ -1,6 +1,11 @@
-const resultSchema = new mongoose.Schema({
+const { models, model, Schema } = require("mongoose");
+const ResultSchema = new Schema({
     email:{
         type: String,
+        required: false,
+    },
+    typeOfExam: {
+        type: [String],
         required: true,
     },
     answers: {
@@ -11,19 +16,8 @@ const resultSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    // date: {
-    //     type: date,
-    //     required: true,
-    // },
-    // time: {
-    //     type: String,
-    //     required: true,
-    // },
-    // question: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Question',
-    //     required: true,
-
-    // },
+    
     })
-    const Result = mongoose.model('Result', resultSchema);
+    const Result = models.resultdetails || model("resultdetails",ResultSchema)   
+    module.exports = Result
+    // const Result = mongoose.model('Result', ResultSchema);
