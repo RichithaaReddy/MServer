@@ -8,10 +8,6 @@ const ResultSchema = new Schema({
         type: [String],
         required: true,
     },
-    answers: {
-        type: [String],
-        required: true,
-    },
     score: {
         type: Number,
         required: true,

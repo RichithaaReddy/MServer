@@ -7,6 +7,7 @@ const Resultdetails = require('../model/ResultSchema')
 require("../db/conn");
 const cloudinary  = require('cloudinary');
 const User = require("../model/UserSchema");
+const Result = require('../model/ResultSchema')
 
 
 router.get("/", (req, res) => {
@@ -119,5 +120,38 @@ router.post("/scorecard", async (req, res)=>{
   return res.json({status:"Results Added"});
 
 })
+
+router.get("/getusers",async(req,res)=>{
+  const result = await User.find();
+  return res.json(result);
+})
+
+router.get("/testpatterns",async(req,res)=>{
+  const restt = await TestDetails.find();
+  return res.json(restt);
+})
+
+
+router.post('/storetestmarks',async(req,res)=>{
+     const token = req.body.token;
+     const examtype = req.body.examtype;
+     const score = req.body.score;
+     const load = jwt.verify(token,"NOTTOBESHARED");
+     const orgid = load.user.id;
+     console.log(load);
+     const user = await User.findOne({_id:orgid});
+     const body = {
+      email:user.email,
+      score:score,
+      date: new Date(),
+      userid:user._id,
+      examtype:examtype
+     }
+     const result = new Result(body);
+     result.save();
+     return res.json({"status":"posted"});
+})
+
+
 
 module.exports = router;
