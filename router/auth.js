@@ -10,10 +10,12 @@ const User = require("../model/UserSchema");
 const Result = require('../model/ResultSchema')
 
 
+
 router.get("/", (req, res) => {
   res.send("server router");
 });
-//async await
+
+
 router.post("/register", async (req, res) => {
   const { name, email, password, cpassword } = req.body;
   console.log(req.body)
@@ -26,7 +28,7 @@ router.post("/register", async (req, res) => {
     if (userExist) {
       return res.status(422).json({ error: "Email exists" });
     } else if (password != cpassword) {
-      return res.status(422).json({ error: "passwords do not match" });
+      return res.status(422).json({ error: "Passwords do not match" });
     } else {
       const user = new User({ name, email, password, cpassword });
 
@@ -36,7 +38,9 @@ router.post("/register", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
-})
+});
+
+
 router.post("/login", async (req, res) => {
   try {
     let token;
@@ -130,7 +134,10 @@ router.get("/testpatterns",async(req,res)=>{
   const restt = await TestDetails.find();
   return res.json(restt);
 })
-
+router.get("/users",async(req,res)=>{
+  const result = await User.find();
+  return res.json(result);
+})
 
 router.post('/storetestmarks',async(req,res)=>{
      const token = req.body.token;
@@ -150,6 +157,16 @@ router.post('/storetestmarks',async(req,res)=>{
      const result = new Result(body);
      result.save();
      return res.json({"status":"posted"});
+})
+
+router.get('/getIndividualStudent/:id',async(req,res)=>{
+  const token = req.params.id;
+  console.log(token)
+  var data = jwt.decode(token,"NOTTOBESHARED");
+  console.log(data);
+  const userdetails = await User.find({_id:data.user.id});
+  console.log(userdetails)
+  return res.json(userdetails)
 })
 
 
