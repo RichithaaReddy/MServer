@@ -43,38 +43,40 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    let token;
     const { email, password } = req.body;
+
     if (!email || !password) {
-      return res.status(422).json({ "status": "enter all fields" });
+      return res.status(422).json({ "status": "Please enter both email and password" });
     }
+
     const userLogin = await User.findOne({ email: email });
-    if (userLogin) {
-      const isMatch = await bcrypt.compare(password, userLogin.password);
-      if (!isMatch) {
-        res.status(400).json({ "status": "Invalid credentials" });
-      } else {
-        let payload = {
-          user:{
-             id:userLogin.id
-          }
-        }
-        const token = jwt.sign(payload,"NOTTOBESHARED",{expiresIn:9999999999999},(err,token)=>{
-               if(err)
-               {
-                res.send(err);
-               }
-               else
-               {
-                   res.json({"status":token});
-               }
-        })
-      }
-    } else {
-      res.status(400).json({ error: "Invalid credentials" });
+
+    if (!userLogin) {
+      return res.status(401).json({ "status": "Invalid credentials" });
     }
+
+    const isMatch = await bcrypt.compare(password, userLogin.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ "status": "Invalid credentials" });
+    }
+
+    // User is authenticated, generate and send a token
+    const payload = {
+      user: {
+        id: userLogin.id
+      }
+    };
+
+    jwt.sign(payload, "NOTTOBESHARED", { expiresIn: "7d" }, (err, token) => {
+      if (err) {
+        return res.status(500).json({ "status": "Error generating token" });
+      }
+      res.json({ "status": token });
+    });
   } catch (err) {
-    console.log(err);
+    console.error(err);
+    res.status(500).json({ "status": "Server error" });
   }
 });
 
