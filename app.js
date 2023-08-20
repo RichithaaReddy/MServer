@@ -4,7 +4,16 @@ const express = require("express");
 const app = express();
 const cors = require('cors')
 app.use(express.json())
-app.use(cors({origin:'*'}))
+app.use(
+  cors(
+    {
+      origin:'*',
+      // methods:["POST","GET"],
+      // credentials: true
+    }
+    
+
+))
 dotenv.config({ path: "./config.env" });
 require('./db/conn')
 //const User = require('./model/UserSchema')
